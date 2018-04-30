@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "108373332999",
+    "firebase_url": "https://nodesystem-4c416.firebaseio.com",
+    "project_id": "nodesystem-4c416",
+    "storage_bucket": "nodesystem-4c416.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108373332999:android:db78ac107464cacb",
+        "android_client_info": {
+          "package_name": "br.com.danielrsoares.organizze"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108373332999-b0jse71sgvoud97vutvl9m6e83fp1fts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.danielrsoares.organizze",
+            "certificate_hash": "248602868b6a50c9eeee922f36edcff256ccd3da"
+          }
+        },
+        {
+          "client_id": "108373332999-ocl5i63q4d00f7lkrbn4t24avnpmunr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVECY1H29tS1g3ynqtVZuwU9_i4ynII4c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108373332999-ocl5i63q4d00f7lkrbn4t24avnpmunr7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

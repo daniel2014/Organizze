@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Organizze</string>
+    <string name="text_acesse_conta">Acesse sua conta</string>
+    <string name="btn_entrar">Entrar</string>
+    <string name="btn_nao_tem_conta">Não tem conta? Cadastra-se</string>
+    <string name="text_crie_sua_conta">Crie sua conta grátis</string>
+    <string name="text_cadastrar">Cadastrar</string>
+    <string name="text_termos_de_uso">Termos de uso</string>
+    <string name="text_crie_sua_conta_gratis">Crie sua conta grátis</string>
+    <string name="bt_cadastrar">Cadastrar</string>
+    <string name="text_acessar_conta">Acessar sua conta</string>
+    <string name="bt_entrar">Entrar</string>
+    <string name="bt_nao_tem_conta_cadastre">Não tem conta? Cadastre-se</string>
+    <string name="title_activity_principal">PrincipalActivity</string>
+</resources>
