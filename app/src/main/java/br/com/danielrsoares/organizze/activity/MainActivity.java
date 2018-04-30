@@ -12,6 +12,7 @@ import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
 public class MainActivity extends AppCompatActivity {
 
     int b;
+    int hhh;
 
 
     @Override
