@@ -17,7 +17,7 @@ public class PrincipalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_principal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -25,7 +25,16 @@ public class PrincipalActivity extends AppCompatActivity {
                 Snackbar.make(view, "Substitua por sua própria ação", Snackbar.LENGTH_LONG)
                         .setAction("Ação", null).show();
             }
-        });
+        });*/
+
+    }
+    //Método => Boão adicionarDespesa
+    public void adicionarDespesa(View view){
+
+    }
+
+    //Método => Botão adicionarReceita
+    public void adicionarReceita(View view){
 
     }
 
