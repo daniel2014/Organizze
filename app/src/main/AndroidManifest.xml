@@ -24,10 +24,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.ReceitasActivity"
-            android:theme="@style/receitasTheme" />
+            android:theme="@style/receitasTheme"/>
         <activity
             android:name=".activity.DespesasActivity"
-            android:theme="@style/despesasTheme"></activity>
+            android:theme="@style/despesasTheme"/>
     </application>
 
 </manifest>
