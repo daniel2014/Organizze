@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import br.com.danielrsoares.organizze.R;
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
+import br.com.danielrsoares.organizze.help.Base64Custom;
 import br.com.danielrsoares.organizze.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
@@ -85,6 +86,11 @@ public class CadastroActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()){
+
+                                // Ao clicar em cadastrar automaticamente será feito a conversão do e-mail em base64
+                                String idUsuario = Base64Custom.codificarBase64(usuario.getEmail()); // Codificando E-mail para Base64 é usado como identificador do usuário no FireBase
+                                usuario.setIdUsuario(idUsuario); // Foi criado um Método na pasta Model => Usuario
+                                usuario.salvar(); //Método => Salvar da Classe Usuario
                                 finish(); //Fechar tela de cadastro após cadastrado com sucesso
 
                             }else {
