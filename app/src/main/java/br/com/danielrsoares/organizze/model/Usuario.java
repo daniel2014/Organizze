@@ -11,6 +11,8 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private Double receitaTotal = 0.00;
+    private Double despesaTotal = 0.00;
 
     public Usuario() {
     }
@@ -21,6 +23,27 @@ public class Usuario {
         firebase.child("usuarios") //Cria Nó usuário
                 .child(this.idUsuario) //Cria Nó ID do usuário em base64
                 .setValue(this); //Salvando o Objeto Usuário ou seja os dados
+        /*O que for criado aqui como get e seter ele irá automáticamente adicionar os parâmetros dentro do firebase
+          mesmo que eu ainda não tenha criado os métodos de entrada de informações por que o método
+          .setValue(this) lança todos os valores aqui criado dentro de um Nó do FireBase, salvo quando tem anotação @Exclude
+          ai nesse caso ele não irá criar um setValue dentro de um Nó no FireBase pois ele ignora esse parâmetro
+        */
+    }
+
+    public Double getReceitaTotal() {
+        return receitaTotal;
+    }
+
+    public void setReceitaTotal(Double receitaTotal) {
+        this.receitaTotal = receitaTotal;
+    }
+
+    public Double getDespesaTotal() {
+        return despesaTotal;
+    }
+
+    public void setDespesaTotal(Double despesaTotal) {
+        this.despesaTotal = despesaTotal;
     }
 
     @Exclude //Anotação do Firebase remove esse dado na hora de Salvar o Objeto

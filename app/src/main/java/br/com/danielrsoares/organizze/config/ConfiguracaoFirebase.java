@@ -9,7 +9,7 @@ public class ConfiguracaoFirebase {
     private static DatabaseReference firebase;
     private static FirebaseAuth autenticacao; //Atributo
 
-    //Retorna a instancia do FirebaseDatabase
+    //Retorna a instancia do FirebaseDatabase Banco de Dados RealTime
     public static DatabaseReference getFirebaseDatabase(){
 
         if (firebase == null){
@@ -18,7 +18,7 @@ public class ConfiguracaoFirebase {
         return firebase;
     }
 
-    //Criar um método statico que retorno o FirebaseAuth
+    //Criar um método statico que retorno o FirebaseAuth Login
     public static FirebaseAuth getFirebaseAutenticacao() {
         if (autenticacao == null){ //verifica se existe uma instância caso ao contrario
             autenticacao = FirebaseAuth.getInstance(); //irá recuperar no getInstance

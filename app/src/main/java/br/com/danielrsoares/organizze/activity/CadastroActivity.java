@@ -1,6 +1,5 @@
 package br.com.danielrsoares.organizze.activity;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,14 +12,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import br.com.danielrsoares.organizze.R;
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
-import br.com.danielrsoares.organizze.help.Base64Custom;
+import br.com.danielrsoares.organizze.helper.Base64Custom;
 import br.com.danielrsoares.organizze.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
@@ -73,7 +71,7 @@ public class CadastroActivity extends AppCompatActivity {
                     }else{
                         Toast.makeText(CadastroActivity.this,
                                 "Preencha o Nome",
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();//Fechar tela de cadastro após cadastrado com sucesso
                     }
 
                 }
@@ -91,7 +89,7 @@ public class CadastroActivity extends AppCompatActivity {
                                 String idUsuario = Base64Custom.codificarBase64(usuario.getEmail()); // Codificando E-mail para Base64 é usado como identificador do usuário no FireBase
                                 usuario.setIdUsuario(idUsuario); // Foi criado um Método na pasta Model => Usuario
                                 usuario.salvar(); //Método => Salvar da Classe Usuario
-                                finish(); //Fechar tela de cadastro após cadastrado com sucesso
+                                finish();
 
                             }else {
 
