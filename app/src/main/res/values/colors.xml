@@ -5,8 +5,8 @@
     <color name="colorAccent">#40efff</color>
 
     <!--     Estilo de Cores Despesas   !-->
-    <color name="colorPrimaryDespesa">#FF706A</color>
-    <color name="colorPrimaryDarkDespesa">#E66560</color>
+    <color name="colorPrimaryDespesa">#ff706a</color>
+    <color name="colorPrimaryDarkDespesa">#e66560</color>
     <color name="colorAccentDespesa">#FF706A</color>
 
     <!--     Estilo de Cores Receitas   !-->

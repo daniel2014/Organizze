@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
 import br.com.danielrsoares.organizze.helper.Base64Custom;
+import br.com.danielrsoares.organizze.helper.DateCustom;
 
 public class Movimentacao {
 
@@ -17,14 +18,16 @@ public class Movimentacao {
     }
 
     // Método => Para salvar no Firebase
-    public void salvar(){
+    public void salvar(String dataEscolhida){ // dataEscolhida recebe do parâmetro data
         //Utilizando a Base64 para usar como um identificador
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();//Recupeando email do usuário
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail()); //Codificando E-mail para Base64
+        String mesAno = DateCustom.mesAnoDataEscolhida(dataEscolhida);
+        
         DatabaseReference firebase = ConfiguracaoFirebase.getFirebaseDatabase();
         firebase.child("movimentacao") // Nó movimentacao
                 .child(idUsuario) // Nó identificador de Usuário usando E-mail em Base64
-                .child("02052018") // Nó Mês da movimentação
+                .child(mesAno) // Nó Mês da movimentação
                 .push() // Cria o ID único do FireBase para cada incrementação ou seja cada vez que for salvo as informações ele gere um ID para aquele salvamento
                 .setValue(this); // Pega os valor dos Atributos
     }

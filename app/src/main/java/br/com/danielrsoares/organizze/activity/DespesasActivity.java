@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import br.com.danielrsoares.organizze.R;
 import br.com.danielrsoares.organizze.helper.DateCustom;
@@ -34,12 +35,15 @@ public class DespesasActivity extends AppCompatActivity {
 
     public void salvarDespesa(View view){
         movimentacao = new Movimentacao();
-        movimentacao.setValor(Double.parseDouble(campoValor.getText().toString()));
-        movimentacao.setCategoria(campoCategoria.getText().toString());
-        movimentacao.setDescricao(campoDescricao.getText().toString());
-        movimentacao.setData(campoData.getText().toString());
+        String data = campoData.getText().toString();
+        movimentacao.setValor(Double.parseDouble(campoValor.getText().toString())); //Pegando o Valor digitado pelo usuário
+        movimentacao.setCategoria(campoCategoria.getText().toString());//Pegando Categoria informada pelo usuário
+        movimentacao.setDescricao(campoDescricao.getText().toString()); //Pegando pegando a descrição informada pelo usuário
+        movimentacao.setData(data); //Pegando a Data informada pelo usuário
         movimentacao.setTipo("d"); //Configura o Tipo de Movimentação (d) = Despesa
 
-        movimentacao.salvar(); //Adicionando esse conteudo para o Método salvar() da Classe Movimentação
+        movimentacao.salvar(data); //Esse Método pegará todas as informações definida na Classe Movimentacao para salvar no FireBase
+
+        Toast.makeText(getApplicationContext(),"Salvando...", Toast.LENGTH_LONG).show();
     }
 }
