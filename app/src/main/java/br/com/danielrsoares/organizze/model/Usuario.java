@@ -2,7 +2,6 @@ package br.com.danielrsoares.organizze.model;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
-
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
 
 public class Usuario {
