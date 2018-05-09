@@ -91,6 +91,6 @@ public class DespesasActivity extends AppCompatActivity {
             return false;
         }
 
-        //return true; foi colocado esse retorno aqui apenas para não dar erro na hora de contruir esse código de validação
+        //return true; foi colocado esse retorno aqui apenas para não dar erro na hora de contruir esse código de validação.
     }
 }
