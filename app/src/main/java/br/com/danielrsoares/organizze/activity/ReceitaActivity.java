@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +20,7 @@ import br.com.danielrsoares.organizze.helper.DateCustom;
 import br.com.danielrsoares.organizze.model.Movimentacao;
 import br.com.danielrsoares.organizze.model.Usuario;
 
-public class DespesasActivity extends AppCompatActivity {
+public class ReceitaActivity extends AppCompatActivity {
 
     private TextInputEditText campoData, campoCategoria, campoDescricao;
     private EditText campoValor;
@@ -29,7 +28,7 @@ public class DespesasActivity extends AppCompatActivity {
     private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recupeando a referência do FireBaseDataBase
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao(); //Recupeando a referência do FirebaseAutenticacao
     private Double despesaTotal; // É a despesa que já vem sendo acumulada
-    private Double despesaGerada; // É a despesa que o usuário colocou no campo Valor
+    //private Double despesaGerada; // É a despesa que o usuário colocou no campo Valor
     private Double despesaAtualizada; // É a soma da despesaTotal já acumulado + despesaGerada
 
     @Override
@@ -80,7 +79,7 @@ public class DespesasActivity extends AppCompatActivity {
         String textoCategoria = campoCategoria.getText().toString();
         String textoDescrição = campoDescricao.getText().toString();
 
-        if (!textoValor.isEmpty()) {
+        if (!textoValor.isEmpty()) { // Testa se os campos foi preenchidos
             if (!textoData.isEmpty()) {
                 if (!textoCategoria.isEmpty()) {
                     if (!textoDescrição.isEmpty()){
@@ -88,25 +87,25 @@ public class DespesasActivity extends AppCompatActivity {
                         //dentro do método salvarDespesa irá salvar caso for verdadeiro
 
                     }else {
-                        Toast.makeText(DespesasActivity.this,
+                        Toast.makeText(ReceitaActivity.this,
                                 "Descrição não foi preenchido",
                                 Toast.LENGTH_SHORT).show();
                         return false;
                     }
                 } else {
-                    Toast.makeText(DespesasActivity.this,
+                    Toast.makeText(ReceitaActivity.this,
                             "Categoria não foi preenchida",
                             Toast.LENGTH_SHORT).show();
                     return false;
                 }
             } else {
-                Toast.makeText(DespesasActivity.this,
+                Toast.makeText(ReceitaActivity.this,
                         "Data não foi preenchido",
                         Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
-            Toast.makeText(DespesasActivity.this,
+            Toast.makeText(ReceitaActivity.this,
                     "Valor não foi preenchido,",
                     Toast.LENGTH_SHORT).show();
             return false;

@@ -26,7 +26,7 @@
             android:name=".activity.ReceitasActivity"
             android:theme="@style/receitasTheme"/>
         <activity
-            android:name=".activity.DespesasActivity"
+            android:name=".activity.ReceitaActivity"
             android:theme="@style/despesasTheme"/>
     </application>
 

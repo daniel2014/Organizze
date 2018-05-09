@@ -89,7 +89,7 @@ public class CadastroActivity extends AppCompatActivity {
                                 String idUsuario = Base64Custom.codificarBase64(usuario.getEmail()); // Codificando E-mail para Base64 é usado como identificador do usuário no FireBase
                                 usuario.setIdUsuario(idUsuario); // Foi criado um Método na pasta Model => Usuario
                                 usuario.salvar(); //Método => Salvar da Classe Usuario
-                                finish();
+                                finish(); //Fecha activity de Cadastro
 
                             }else {
 
