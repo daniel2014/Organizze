@@ -33,6 +33,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     //Adicionado Botão FloatingActionButton da API => https://github.com/Clans/FloatingActionButton
     implementation 'com.github.clans:fab:1.6.4'
+    //Biblioteca: https://github.com/daniel2014/material-calendarview
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

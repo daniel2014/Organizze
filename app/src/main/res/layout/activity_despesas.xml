@@ -18,7 +18,7 @@
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
         app:layout_constraintVertical_bias="0.571"
-        app:srcCompat="@android:color/darker_gray" />
+        app:srcCompat="@color/color_Preto_Tranparente" />
 
     <TextView
         android:id="@+id/textView5"
@@ -38,7 +38,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="10dp"
         android:text="R$"
-        android:textColor="@android:color/holo_green_dark"
+        android:textColor="@color/color_Texto_Preto"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/editValor"
@@ -48,10 +48,10 @@
     <EditText
         android:id="@+id/editValor"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:hint="0.00"
@@ -62,10 +62,10 @@
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.914"
+        app:layout_constraintHorizontal_bias="0.81"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.57" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"

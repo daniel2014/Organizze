@@ -10,9 +10,11 @@
     <color name="colorAccentDespesa">#FF706A</color>
 
     <!--     Estilo de Cores Receitas   !-->
-    <color name="colorPrimaryReceita">#00D39E</color>
+    <color name="colorPrimaryReceita">#00d39e</color>
     <color name="colorPrimaryDarkReceita">#00BE8B</color>
     <color name="colorAccentReceita">#00D39E</color>
+    <color name="color_Preto_Tranparente">#d0000000</color>
+    <color name="color_Texto_Preto">#131313</color>
 
 </resources>
 
