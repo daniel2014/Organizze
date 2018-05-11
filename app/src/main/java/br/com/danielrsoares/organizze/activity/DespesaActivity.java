@@ -62,12 +62,11 @@ public class DespesaActivity extends AppCompatActivity {
             movimentacao.setData(data); //Pegando a Data informada pelo usuário
             movimentacao.setTipo("d"); //Configura o Tipo de Movimentação (d) = Despesa
             //Antes de Salvar a movimentação temos que atualizar os valores de movomentação
-            despesaAtualizada = despesaTotal + valorRecuperado;
+            despesaAtualizada = despesaTotal - valorRecuperado;
             atualizarDespesa(despesaAtualizada); //Método atualizarDespesa();
 
             movimentacao.salvar(data); //Esse Método pegará todas as informações definida na Classe Movimentacao para salvar no FireBase
-
-            Toast.makeText(getApplicationContext(), "Salvando...", Toast.LENGTH_LONG).show();
+            finish(); //Fecha a Tela Despesa após clicar no Botão Salvar
         }
     }
 

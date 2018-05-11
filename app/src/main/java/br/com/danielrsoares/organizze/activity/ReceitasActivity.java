@@ -67,8 +67,7 @@ public class ReceitasActivity extends AppCompatActivity {
             atualizarReceita(receitaAtualizada); //Método atualizarDespesa();
 
             movimentacao.salvar(data); //Esse Método pegará todas as informações definida na Classe Movimentacao para salvar no FireBase
-
-            Toast.makeText(getApplicationContext(), "Salvando...", Toast.LENGTH_LONG).show();
+            finish();//Fecha a Tela Despesa após clicar no Botão Salvar
         }
     }
 
