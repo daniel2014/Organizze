@@ -34,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // == Alterando Título da Toobar === //
+        getSupportActionBar().setTitle("Login");
+
         campoEmail = findViewById(R.id.editEmail);
         campoSenha = findViewById(R.id.editSenha);
         botaoEntrar = findViewById(R.id.buttonEntrar);
@@ -119,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
     //Método => Verificar usuário Logado
     public void verificarUsuarioCadastrado(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        //autenticacao.signOut(); //Delogar Usuário =======
+        //autenticacao.signOut(); //Deslogar Usuário =======
         if (autenticacao.getCurrentUser() != null){ //Verifica se usuário esta logado
 
             abrirTelaPrincipal();
