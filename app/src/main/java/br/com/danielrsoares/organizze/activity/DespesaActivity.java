@@ -20,7 +20,7 @@ import br.com.danielrsoares.organizze.helper.DateCustom;
 import br.com.danielrsoares.organizze.model.Movimentacao;
 import br.com.danielrsoares.organizze.model.Usuario;
 
-public class ReceitaActivity extends AppCompatActivity {
+public class DespesaActivity extends AppCompatActivity {
 
     private TextInputEditText campoData, campoCategoria, campoDescricao;
     private EditText campoValor;
@@ -87,25 +87,25 @@ public class ReceitaActivity extends AppCompatActivity {
                         //dentro do método salvarDespesa irá salvar caso for verdadeiro
 
                     }else {
-                        Toast.makeText(ReceitaActivity.this,
+                        Toast.makeText(DespesaActivity.this,
                                 "Descrição não foi preenchido",
                                 Toast.LENGTH_SHORT).show();
                         return false;
                     }
                 } else {
-                    Toast.makeText(ReceitaActivity.this,
+                    Toast.makeText(DespesaActivity.this,
                             "Categoria não foi preenchida",
                             Toast.LENGTH_SHORT).show();
                     return false;
                 }
             } else {
-                Toast.makeText(ReceitaActivity.this,
+                Toast.makeText(DespesaActivity.this,
                         "Data não foi preenchido",
                         Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
-            Toast.makeText(ReceitaActivity.this,
+            Toast.makeText(DespesaActivity.this,
                     "Valor não foi preenchido,",
                     Toast.LENGTH_SHORT).show();
             return false;
