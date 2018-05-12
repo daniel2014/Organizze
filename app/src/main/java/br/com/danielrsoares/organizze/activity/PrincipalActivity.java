@@ -2,13 +2,18 @@ package br.com.danielrsoares.organizze.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,10 +25,14 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.danielrsoares.organizze.R;
+import br.com.danielrsoares.organizze.adapter.AdapterMovimentacao;
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
 import br.com.danielrsoares.organizze.helper.Base64Custom;
+import br.com.danielrsoares.organizze.model.Movimentacao;
 import br.com.danielrsoares.organizze.model.Usuario;
 
 public class PrincipalActivity extends AppCompatActivity {
@@ -31,12 +40,15 @@ public class PrincipalActivity extends AppCompatActivity {
     private MaterialCalendarView calendarView;
     private TextView textoSaudacao, textoSaldo;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recupeando a referência do FireBaseDataBase
+    private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recuperando a referência do FireBaseDataBase
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
     private DatabaseReference usuarioRef; // É um Objeto
     private ValueEventListener valueEventListenerUsuario; //É um objeto que pode tratar e receber um valueEventListener
+    private RecyclerView recyclerView;
+    private AdapterMovimentacao adapterMovimentacao;
+    private List<Movimentacao> movimentacaos = new ArrayList<>();
 
 
     @Override
@@ -50,16 +62,21 @@ public class PrincipalActivity extends AppCompatActivity {
         textoSaudacao = findViewById(R.id.textSaudacao);
         textoSaldo = findViewById(R.id.textSaldo);
         calendarView = findViewById(R.id.calendarView);
+        recyclerView = findViewById(R.id.recyclerMovimentos);
 
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Substitua por sua própria ação", Snackbar.LENGTH_LONG)
-                        .setAction("Ação", null).show();
-            }
-        });*/
+        //Configurar Adapter para RecylerView
+        adapterMovimentacao = new AdapterMovimentacao(movimentacaos, this);
+
+
+        //Configurar o RecylerView
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapterMovimentacao);
+
+
+
+
          // ------------------------------------- CalendarView --------------------------------------------------------------//
          //Por padrão esta configurado o calendário 200 anos antes e 200 anos depois
         //Para controlar isso segue o método da próxima linha
@@ -77,10 +94,8 @@ public class PrincipalActivity extends AppCompatActivity {
                 //Log.i("data","valor: " + date); // mostra a data completa padrão inglês
 
                 Log.i("data", "valor: " + (date.getMonth() + 1) + "/" + date.getYear());
-
             }
         });
-
     }
 
     //Recuperando o Resumo no estado onStart ou seja recupera Evento do Listener do método recuperarResumo abaixo

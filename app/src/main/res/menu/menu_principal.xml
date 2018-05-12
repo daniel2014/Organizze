@@ -6,6 +6,5 @@
         android:id="@+id/menuSair"
         android:orderInCategory="100"
         android:title="Sair"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
 </menu>
