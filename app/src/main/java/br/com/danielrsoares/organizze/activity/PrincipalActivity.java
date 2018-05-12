@@ -35,6 +35,8 @@ public class PrincipalActivity extends AppCompatActivity {
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
+    private DatabaseReference usuarioRef; // É um Objeto
+    private ValueEventListener valueEventListenerUsuario; //É um objeto que pode tratar e receber um valueEventListener
 
 
     @Override
@@ -48,7 +50,6 @@ public class PrincipalActivity extends AppCompatActivity {
         textoSaudacao = findViewById(R.id.textSaudacao);
         textoSaldo = findViewById(R.id.textSaldo);
         calendarView = findViewById(R.id.calendarView);
-        recuperarResumo();
 
 /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -82,15 +83,25 @@ public class PrincipalActivity extends AppCompatActivity {
 
     }
 
+    //Recuperando o Resumo no estado onStart ou seja recupera Evento do Listener do método recuperarResumo abaixo
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recuperarResumo();
+    }
+
     //Recuperar Resumo da exibição dentro da ActivityPrincipal do FireBase
     public void recuperarResumo(){
 
         String emailUsuario = autenticacao.getCurrentUser().getEmail(); //Aqui Recupera o E-mail do usuário cadastrado
         //Recuperando Id do usuário em Base64 do Firebase por meio do E-mail
         String idUsuario = Base64Custom.codificarBase64(emailUsuario); // Aqui converte o e-mail em Base64 para poder acessar o usuario do FireBase
-        DatabaseReference usuarioRef = firebaseRef.child("usuarios").child(idUsuario); //Acessa o Nó .child("usuarios") e em seguida Acessa o Id do usuário .child(idUsuario) por meio do E-mail codificado em Base64 para acessar os dados usuário no FireBase
+        usuarioRef = firebaseRef.child("usuarios").child(idUsuario); //Acessa o Nó .child("usuarios") e em seguida Acessa o Id do usuário .child(idUsuario) por meio do E-mail codificado em Base64 para acessar os dados usuário no FireBase
 
-        usuarioRef.addValueEventListener(new ValueEventListener() {
+        //valueEventListenerUsuario irá acessar ValueEventListener para podemos para-lo pois ele fica executando ativamente sem necessidade nesse caso
+        //ou seja vamos Remover o Evento do Listener
+        Log.i("Evento", "Evento foi adicionado!");
+        valueEventListenerUsuario = usuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -149,4 +160,13 @@ public class PrincipalActivity extends AppCompatActivity {
 
     }
 
+    //Sobreescrever a Classe onStop / ele é chamado sempre que o app não estiver mais sendo utilizado.
+    //ou seja desanexando o Resumo do Listener no estado onStop ou seja desanexa o Evento do Listener do método recuperarResumo bem acima
+    //Removendo Evento do Listener
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("Evento", "Evento foi removido!");
+        usuarioRef.removeEventListener(valueEventListenerUsuario);
+    }
 }
