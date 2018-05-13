@@ -2,8 +2,6 @@ package br.com.danielrsoares.organizze.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,17 +36,22 @@ public class PrincipalActivity extends AppCompatActivity {
 
     private MaterialCalendarView calendarView;
     private TextView textoSaudacao, textoSaldo;
-    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recuperando a referência do FireBaseDataBase
+
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
+
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recuperando a referência do FireBaseDataBase
     private DatabaseReference usuarioRef; // É um Objeto
     private ValueEventListener valueEventListenerUsuario; //É um objeto que pode tratar e receber um valueEventListener
+    private ValueEventListener valueEventListenerMovimentacoes;
+
     private RecyclerView recyclerView;
     private AdapterMovimentacao adapterMovimentacao;
-    private List<Movimentacao> movimentacaos = new ArrayList<>();
-
+    private List<Movimentacao> movimentacoes = new ArrayList<>(); //Objeto
+    private DatabaseReference movimentacaoRef; //Referência da Movimentação
+    private String mesAnoSelecionado; //Atributo para acessar dentro de movimentações do FireBase Online
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,51 +64,60 @@ public class PrincipalActivity extends AppCompatActivity {
         textoSaudacao = findViewById(R.id.textSaudacao);
         textoSaldo = findViewById(R.id.textSaldo);
         calendarView = findViewById(R.id.calendarView);
+        configuraCalendarView(); //Método Configura CalendarView
+
         recyclerView = findViewById(R.id.recyclerMovimentos);
 
         //Configurar Adapter para RecylerView
-        adapterMovimentacao = new AdapterMovimentacao(movimentacaos, this);
+        adapterMovimentacao = new AdapterMovimentacao(movimentacoes, this);
 
-
-        //Configurar o RecylerView
+        //Configurar o RecyClerView
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapterMovimentacao);
+    }
 
+    // ===== Recuperar Movimntações no Firebase ===== //
+    public void recuperarMovimentacoes() {
+        String emailUsuario = autenticacao.getCurrentUser().getEmail(); //Aqui Recupera o E-mail do usuário cadastrado
+        //Recuperando Id do usuário em Base64 do Firebase por meio do E-mail
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario); // Aqui converte o e-mail em Base64 para poder acessar o usuario do FireBase
+        movimentacaoRef = firebaseRef.child("movimentacao")
+                .child(idUsuario)
+                .child(mesAnoSelecionado); //Desntro de movimentacoes do FireBase Online
+        Log.i("dadosRetorno", "dados: " + mesAnoSelecionado);
 
-
-
-         // ------------------------------------- CalendarView --------------------------------------------------------------//
-         //Por padrão esta configurado o calendário 200 anos antes e 200 anos depois
-        //Para controlar isso segue o método da próxima linha
-        /* calendarView.state().edit()
-                .setMinimumDate(CalendarDay.from(2015, 1, 1)) //Definindo Data minima para calendário
-                .setMaximumDate(CalendarDay.from(2018, (3 - 1), 1)) //Definindo Data máxima para calendário | subritrai o mês pois a data por padrão mostra um mês depois
-                .commit();
-         */
-
-        //Método => Verifica quando navergar no calendário pega a data atual apenas navegando ex: 01/02/2018 de forma automática irá atualizar o mês navegado
-        calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
+        valueEventListenerMovimentacoes = movimentacaoRef.addValueEventListener(new ValueEventListener() { //Recuperando os dados de movimentação
             @Override
-            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //Log.i("data","valor: " + date); // mostra a data completa padrão inglês
+                movimentacoes.clear(); //Limpando as Listas das movimentações antes de o 'for' abaixo começar a começar a configurar valores para ela
 
-                Log.i("data", "valor: " + (date.getMonth() + 1) + "/" + date.getYear());
+                //getChildren ele pega o dataSnapshot e percorre o primeiro filho desse dataSnapshot
+                for (DataSnapshot dados : dataSnapshot.getChildren()) { //Percorrendo cada uma das movimentações no Firebase
+                    Log.i("dados", "retorno: " + dados.toString());
+
+                    Movimentacao movimentacao = dados.getValue(Movimentacao.class); //Recuperando para => Pacote: model => Classe: Movimentacao.class
+                    movimentacoes.add(movimentacao); //Criando um Array de List
+                    Log.i("dadosRetorno", "dados: " + movimentacao.getCategoria());
+
+                }
+                //Método => Notifica O adapterMovimentacao que os dados mudaram
+                adapterMovimentacao.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
+        Log.i("MES", "mês: " + mesAnoSelecionado);
     }
 
-    //Recuperando o Resumo no estado onStart ou seja recupera Evento do Listener do método recuperarResumo abaixo
-    @Override
-    protected void onStart() {
-        super.onStart();
-        recuperarResumo();
-    }
 
-    //Recuperar Resumo da exibição dentro da ActivityPrincipal do FireBase
-    public void recuperarResumo(){
+    // === Recuperar Resumo da exibição dentro da ActivityPrincipal do FireBase ===
+    public void recuperarResumo() {
 
         String emailUsuario = autenticacao.getCurrentUser().getEmail(); //Aqui Recupera o E-mail do usuário cadastrado
         //Recuperando Id do usuário em Base64 do Firebase por meio do E-mail
@@ -148,11 +159,12 @@ public class PrincipalActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_principal, menu); // É um Objeto que Vei converter o XML em uma View
         return super.onCreateOptionsMenu(menu);
     }
+
     // == Método para Tratar as Ações do Menu - Botão para DESLOGAR do App ===>
     //Pode incluir mais aitem de menu aqui
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menuSair: // Esse ID vem do XML menu_principal
                 autenticacao.signOut(); //Deslogando
                 startActivity(new Intent(this, LoginActivity.class)); //Após deslogar enviar para Tela de Login
@@ -163,16 +175,53 @@ public class PrincipalActivity extends AppCompatActivity {
     }
 
 
-    //Método => Boão adicionarDespesa
-    public void adicionarDespesa(View view){
+    // === Método => Boão adicionarDespesa ===/
+    public void adicionarDespesa(View view) {
         startActivity(new Intent(this, DespesaActivity.class));
 
     }
 
-    //Método => Botão adicionarReceita
-    public void adicionarReceita(View view){
+    // === Método => Botão adicionarReceita ===/
+    public void adicionarReceita(View view) {
         startActivity(new Intent(this, ReceitasActivity.class));
 
+    }
+
+    // ------------------------------------- CalendarView --------------------------------------------------------------//
+    //OBS: Nesse método tem atributos repetido e deve seguir esse formato pois são métodos dentro do outro para funcionar corretamente
+    public void configuraCalendarView() {
+
+        //Configurando o Mês Selecionado
+        CalendarDay dataAtual = calendarView.getCurrentDate();
+        //É necessário fazer essa configuração adicioando um '0' pois no fireBase a data esta como 022018 e daforma que estava consultando era 22018 retornando null
+        String mesSelecionado = String.format("%02d", (dataAtual.getMonth() + 1)); //Definindo um formato com um '0' a esquerda
+        //String.valueOf = Converte um Inteiro para uma String
+        mesAnoSelecionado = String.valueOf(mesSelecionado + "" + dataAtual.getYear()); //"" serve para não somar os valores pois se trata de Data
+
+        //Esse Método => Somente é chamado quando é movimentado a barra do calendário
+        //Método => Verifica quando navergar no calendário pega a data atual apenas navegando ex: 01/02/2018 de forma automática irá atualizar o mês navegado
+        calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
+            @Override
+            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+                //Log.i("data","valor: " + date); // mostra a data completa padrão inglês
+                // Log.i("data", "valor: " + (date.getMonth() + 1) + "/" + date.getYear());
+                String mesSelecionado = String.format("%02d", (date.getMonth() + 1)); //% = queremos criar uma formatação | 02 = a quantidades de números | d = tipo digito
+                mesAnoSelecionado = String.valueOf(mesSelecionado + "" + date.getYear()); //Printando a Data selecionado pelo usuário
+
+                //Antes de anexar novamente um evento é necessário remover o anterior com o código abaixo
+                movimentacaoRef.removeEventListener(valueEventListenerMovimentacoes);
+                recuperarMovimentacoes();
+
+            }
+        });
+    }
+
+    // === Recuperando o Resumo no estado onStart ou seja recupera Evento do Listener do método recuperarResumo abaixo ====/
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recuperarResumo();
+        recuperarMovimentacoes(); //recuperando movimentações
     }
 
     //Sobreescrever a Classe onStop / ele é chamado sempre que o app não estiver mais sendo utilizado.
@@ -182,6 +231,7 @@ public class PrincipalActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.i("Evento", "Evento foi removido!");
-        usuarioRef.removeEventListener(valueEventListenerUsuario);
+        usuarioRef.removeEventListener(valueEventListenerUsuario); // Remove EventListener de Referência de Usuário
+        movimentacaoRef.removeEventListener(valueEventListenerMovimentacoes); //Remove EventListener de Movimentação de Usuário
     }
 }
