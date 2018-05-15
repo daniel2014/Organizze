@@ -21,7 +21,7 @@ import br.com.danielrsoares.organizze.helper.DateCustom;
 import br.com.danielrsoares.organizze.model.Movimentacao;
 import br.com.danielrsoares.organizze.model.Usuario;
 
-public class ReceitasActivity extends AppCompatActivity {
+public class        ReceitasActivity extends AppCompatActivity {
 
     private TextInputEditText campoData, campoCategoria, campoDescricao;
     private EditText campoValor;
@@ -29,8 +29,7 @@ public class ReceitasActivity extends AppCompatActivity {
     private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recupeando a referência do FireBaseDataBase
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao(); //Recupeando a referência do FirebaseAutenticacao
     private Double receitaTotal; // É a despesa que já vem sendo acumulada
-    //private Double receitaGerada; // É a despesa que o usuário colocou no campo Valor
-    private Double receitaAtualizada; // É a soma da receitaTotal já acumulado + receita Adicionada
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class ReceitasActivity extends AppCompatActivity {
             movimentacao.setData(data); //Pegando a Data informada pelo usuário
             movimentacao.setTipo("r"); //Configura o Tipo de Movimentação (d) = Despesa
             //Antes de Salvar a movimentação temos que atualizar os valores de movomentação
-            receitaAtualizada = receitaTotal + valorRecuperado;
+            Double receitaAtualizada = receitaTotal + valorRecuperado;
             atualizarReceita(receitaAtualizada); //Método atualizarDespesa();
 
             movimentacao.salvar(data); //Esse Método pegará todas as informações definida na Classe Movimentacao para salvar no FireBase

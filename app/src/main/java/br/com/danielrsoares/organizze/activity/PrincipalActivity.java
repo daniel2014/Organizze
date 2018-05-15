@@ -1,7 +1,9 @@
 package br.com.danielrsoares.organizze.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import br.com.danielrsoares.organizze.R;
 import br.com.danielrsoares.organizze.adapter.AdapterMovimentacao;
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
@@ -48,6 +53,7 @@ public class PrincipalActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterMovimentacao adapterMovimentacao;
     private List<Movimentacao> movimentacoes = new ArrayList<>(); //Objeto
+    private Movimentacao movimentacao;
     private DatabaseReference movimentacaoRef; //Referência da Movimentação
     private String mesAnoSelecionado; //Atributo para acessar dentro de movimentações do FireBase Online
 
@@ -78,7 +84,7 @@ public class PrincipalActivity extends AppCompatActivity {
 
 
     // ======= Método => Swipe (quer dizer Deslizar) =========//
-    public void swipe(){
+    public void swipe() {
 
         ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
             @Override // Aqui configuramos como deve ser o swipe ou movimento
@@ -94,8 +100,10 @@ public class PrincipalActivity extends AppCompatActivity {
                 return false;
             }
 
-            @Override // Vamos utilizar para Excluir um item
+            @Override
+            // Vamos utilizar para Excluir um item | O ViewHolder irá recuperar a posição do item
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                excluirMovimentacao(viewHolder);
                 Log.i("swipe", "Item foi arrastado");
             }
         };
@@ -104,8 +112,74 @@ public class PrincipalActivity extends AppCompatActivity {
 
     }
 
+    //====== Método => Excluir Movimentação ===========//
+    public void excluirMovimentacao(final RecyclerView.ViewHolder viewHolder) {
 
-    // ===== Recuperar Movimntações no Firebase ===== //
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        //Configura AlertaDialog
+        alertDialog.setTitle("Excluir Movimentação da Conta");
+        alertDialog.setMessage("Você tem certeza que deseja realmente excluir essa movimentação de sua conta?");
+        alertDialog.setCancelable(false); //Serve para não fechar o AlertDailog ao clicar em qualquer lugar da tela
+
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int position = viewHolder.getAdapterPosition(); //Recupera a posição do item que nos deslizamos
+                movimentacao = movimentacoes.get(position); // movimentacoes do tipo Array-List | Movimentação pela posição
+
+                String emailUsuario = autenticacao.getCurrentUser().getEmail(); //Aqui Recupera o E-mail do usuário cadastrado
+                //Recuperando Id do usuário em Base64 do Firebase por meio do E-mail
+                String idUsuario = Base64Custom.codificarBase64(emailUsuario); // Aqui converte o e-mail em Base64 para poder acessar o usuario do FireBase
+                movimentacaoRef = firebaseRef.child("movimentacao")
+                        .child(idUsuario)
+                        .child(mesAnoSelecionado); //Desntro de movimentacoes do FireBase Online
+                Log.i("dadosRetorno", "dados: " + mesAnoSelecionado);
+
+                //Recuperando a Chave da Movimentação
+                movimentacaoRef.child(movimentacao.getKey()).removeValue();// Remove o Nó dentro de Movimentacao sendo a chave ID gerada pelo FireBase, deletando o item selecionado referente a chave.
+                adapterMovimentacao.notifyItemChanged(position);
+                atualizarSaldo(); //Método para atualizar saldo após ser excluido
+            }
+        });
+
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Toast.makeText(PrincipalActivity.this,
+                        "Cancelado",
+                        Toast.LENGTH_SHORT).show();
+                adapterMovimentacao.notifyDataSetChanged(); //Item volta para lista
+            }
+        });
+
+        AlertDialog alert = alertDialog.create();
+        alert.show();
+
+    }
+
+    // Atualizar Saldo após a exclusão do Item
+    public void atualizarSaldo() {
+
+        String emailUsuario = autenticacao.getCurrentUser().getEmail(); //Aqui Recupera o E-mail do usuário cadastrado
+        //Recuperando Id do usuário em Base64 do Firebase por meio do E-mail
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario); // Aqui converte o e-mail em Base64 para poder acessar o usuario do FireBase
+        usuarioRef = firebaseRef.child("usuarios").child(idUsuario); //Acessa o Nó .child("usuarios") e em seguida Acessa o Id do usuário .child(idUsuario) por meio do E-mail codificado em Base64 para acessar os dados usuário no FireBase
+
+        //getTipo() recupera o Tipo da Movimentação
+        if (movimentacao.getTipo().equals("r")) { //Testando receita, caso o item excluido for uma receita iremos fazer o calculo novamente
+            receitaTotal = receitaTotal - movimentacao.getValor();
+            usuarioRef.child("receitaTotal").setValue(receitaTotal);
+        }
+
+        if (movimentacao.getTipo().equals("d")) {
+            despesaTotal = despesaTotal - movimentacao.getValor();
+            usuarioRef.child("despesaTotal").setValue(despesaTotal);
+        }
+    }
+
+    //====== Recuperar Movimntações no Firebase =======//
     public void recuperarMovimentacoes() {
         String emailUsuario = autenticacao.getCurrentUser().getEmail(); //Aqui Recupera o E-mail do usuário cadastrado
         //Recuperando Id do usuário em Base64 do Firebase por meio do E-mail
@@ -122,10 +196,11 @@ public class PrincipalActivity extends AppCompatActivity {
                 movimentacoes.clear(); //Limpando as Listas das movimentações antes de o 'for' abaixo começar a começar a configurar valores para ela
 
                 //getChildren ele pega o dataSnapshot e percorre o primeiro filho desse dataSnapshot
-                for (DataSnapshot dados : dataSnapshot.getChildren()) { //Percorrendo cada uma das movimentações no Firebase
+                for (DataSnapshot dados : dataSnapshot.getChildren()) { //Percorrendo cada uma das movimentações no Firebase ou seja recupera a lista de itens de movimentacao
                     Log.i("dados", "retorno: " + dados.toString());
 
                     Movimentacao movimentacao = dados.getValue(Movimentacao.class); //Recuperando para => Pacote: model => Classe: Movimentacao.class
+                    movimentacao.setKey(dados.getKey());//Recupera a chave ID do Item de cada movimentação lá no FireBase
                     movimentacoes.add(movimentacao); //Criando um Array de List
                     Log.i("dadosRetorno", "dados: " + movimentacao.getCategoria());
 
@@ -162,7 +237,7 @@ public class PrincipalActivity extends AppCompatActivity {
 
                 despesaTotal = usuario.getDespesaTotal();
                 receitaTotal = usuario.getReceitaTotal();
-                resumoUsuario = despesaTotal + receitaTotal;
+                resumoUsuario = receitaTotal - despesaTotal;
 
                 //Limk: https://docs.oracle.com/javase/7/docs/api/java/text/DecimalFormat.html
                 DecimalFormat decimalFormat = new DecimalFormat("0.##"); //Formatar o formato dos números com 2 casas decimais | Caso valor for 00 depois do ponto ele desconsidera essa casa decimal

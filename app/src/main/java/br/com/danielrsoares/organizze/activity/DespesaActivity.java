@@ -28,8 +28,6 @@ public class DespesaActivity extends AppCompatActivity {
     private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase(); //Recupeando a referência do FireBaseDataBase
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao(); //Recupeando a referência do FirebaseAutenticacao
     private Double despesaTotal; // É a despesa que já vem sendo acumulada
-    //private Double despesaGerada; // É a despesa que o usuário colocou no campo Valor
-    private Double despesaAtualizada; // É a soma da despesaTotal já acumulado + despesaGerada
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,7 @@ public class DespesaActivity extends AppCompatActivity {
             movimentacao.setData(data); //Pegando a Data informada pelo usuário
             movimentacao.setTipo("d"); //Configura o Tipo de Movimentação (d) = Despesa
             //Antes de Salvar a movimentação temos que atualizar os valores de movomentação
-            despesaAtualizada = despesaTotal - valorRecuperado;
+            Double despesaAtualizada = despesaTotal + valorRecuperado;
             atualizarDespesa(despesaAtualizada); //Método atualizarDespesa();
 
             movimentacao.salvar(data); //Esse Método pegará todas as informações definida na Classe Movimentacao para salvar no FireBase

@@ -13,6 +13,7 @@ public class Movimentacao {
     private String descricao;
     private String tipo; // Tipo da Movimentação
     private double valor;
+    private String key;
 
     public Movimentacao() {
     }
@@ -30,6 +31,14 @@ public class Movimentacao {
                 .child(mesAno) // Nó Mês da movimentação
                 .push() // Cria o ID único do FireBase para cada incrementação ou seja cada vez que for salvo as informações ele gere um ID para aquele salvamento
                 .setValue(this); // Pega os valor dos Atributos
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getData() {
