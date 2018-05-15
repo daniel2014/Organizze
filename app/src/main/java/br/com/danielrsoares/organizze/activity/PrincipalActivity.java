@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,11 +21,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.danielrsoares.organizze.R;
 import br.com.danielrsoares.organizze.adapter.AdapterMovimentacao;
 import br.com.danielrsoares.organizze.config.ConfiguracaoFirebase;
@@ -36,7 +35,6 @@ public class PrincipalActivity extends AppCompatActivity {
 
     private MaterialCalendarView calendarView;
     private TextView textoSaudacao, textoSaldo;
-
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
@@ -57,16 +55,16 @@ public class PrincipalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Organizze"); // Definindo Nome do Título da ActivityPrincipal
         setSupportActionBar(toolbar);
 
-        textoSaudacao = findViewById(R.id.textSaudacao);
         textoSaldo = findViewById(R.id.textSaldo);
+        textoSaudacao = findViewById(R.id.textSaudacao);
         calendarView = findViewById(R.id.calendarView);
-        configuraCalendarView(); //Método Configura CalendarView
-
         recyclerView = findViewById(R.id.recyclerMovimentos);
+        configuraCalendarView(); //Método Configura CalendarView
+        swipe();
 
         //Configurar Adapter para RecylerView
         adapterMovimentacao = new AdapterMovimentacao(movimentacoes, this);
@@ -77,6 +75,35 @@ public class PrincipalActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapterMovimentacao);
     }
+
+
+    // ======= Método => Swipe (quer dizer Deslizar) =========//
+    public void swipe(){
+
+        ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
+            @Override // Aqui configuramos como deve ser o swipe ou movimento
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+
+                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE; //IDLE significa inativo ou seja faz com que o movimento Drag Drop fica inativo pois não iremos usar
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;  //Configurando o movimento do swipe por meio das Flags
+                return makeMovementFlags(dragFlags, swipeFlags); //recebe 2 parâmetros = 1º são flags de Drags e 2º são flags de swipe
+            }
+
+            @Override //Método é utilizado quando movemos um item na tela
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override // Vamos utilizar para Excluir um item
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.i("swipe", "Item foi arrastado");
+            }
+        };
+        // Anexando o Objeto ItemTouch ao RecyclerView (do método swipe)
+        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
+
+    }
+
 
     // ===== Recuperar Movimntações no Firebase ===== //
     public void recuperarMovimentacoes() {
